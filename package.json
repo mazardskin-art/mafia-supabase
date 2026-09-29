@@ -1,0 +1,15 @@
+{
+  "name": "mafia-supabase-version",
+  "private": true,
+  "scripts": {
+    "test:rules": "node --test tests/*.test.mjs",
+    "supabase:login": "supabase login",
+    "supabase:link": "supabase link --project-ref mtyljiedlrevttobfpqv",
+    "config:push": "supabase config push",
+    "db:push": "supabase db push",
+    "functions:deploy": "supabase functions deploy room"
+  },
+  "devDependencies": {
+    "supabase": "2.118.0"
+  }
+}

@@ -1,0 +1,7 @@
+project_id = "mtyljiedlrevttobfpqv"
+
+[auth]
+enable_anonymous_sign_ins = true
+
+[functions.room]
+verify_jwt = true

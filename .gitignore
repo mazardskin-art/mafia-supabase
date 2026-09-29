@@ -1,0 +1,4 @@
+supabase/.env
+supabase/.temp/
+*.log
+.npm-stage/

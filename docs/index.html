@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#10131b">
+  <title>마피아 게임</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main id="app" class="app"><div class="loading">불러오는 중…</div></main>
+  <div id="connection-notice" class="connection-notice" hidden role="status"><span id="connection-message"></span><button id="state-refresh" type="button">상태 새로고침</button></div>
+  <button id="reset-button" class="reset-button" type="button">게임초기화</button>
+  <footer class="site-footer">
+    <div class="footer-actions">
+      <button id="guide-open" class="footer-action guide-open" type="button">게임진행가이드</button>
+    </div>
+    <div class="site-credit">개발: 크롱</div>
+  </footer>
+  <dialog id="guide-dialog" class="guide-dialog" aria-labelledby="guide-title">
+    <div class="guide-content">
+      <div class="guide-heading"><h2 id="guide-title">게임 진행 가이드</h2><button id="guide-close" class="guide-close" type="button">닫기</button></div>
+      <section>
+        <h3>1. 입장과 게임 준비</h3>
+        <ol>
+          <li>첫 화면에서 진행자 또는 플레이어를 선택합니다. 진행자는 플레이어 수에 포함되지 않으며, 한 방에 진행자 1명과 플레이어 3명 이상이 필요합니다. 진행자는 모든 직업을 확인하고 단계 진행을 담당합니다.</li>
+          <li>플레이어는 닉네임을 입력해 대기실에 입장합니다. 새로고침하거나 다시 접속해도 돌아올 수 있습니다.</li>
+          <li>진행자는 마피아 수와 의사·경찰 포함 여부를 설정한 뒤 <strong>게임 시작</strong>을 누릅니다. 이때 초기화 비밀번호를 새로 설정합니다. 시작하면 새 플레이어는 들어올 수 없습니다.</li>
+          <li>진행자가 각 플레이어의 직업을 직접 지정합니다. 설정한 마피아·의사·경찰 수와 지정 인원이 맞아야 <strong>저장 및 시작</strong>을 할 수 있습니다. 지정하지 않은 플레이어는 시민입니다.</li>
+          <li>모두에게 같은 3초 카운트가 표시된 뒤 각자 본인 역할을 확인합니다. 마피아는 동료 마피아의 닉네임도 봅니다.</li>
+        </ol>
+        <p>대기실에서는 <strong>나가기</strong>로 본인만 퇴장할 수 있고, 누구나 <strong>대기실 비우기</strong>를 눌러 진행자와 플레이어를 모두 비울 수 있습니다. 게임 설정은 유지됩니다.</p>
+      </section>
+      <section>
+        <h3>2. 밤과 낮 진행</h3>
+        <p>게임은 <strong>낮부터</strong> 시작합니다. 진행자는 전체 직업을 확인하며 단계를 진행합니다. 순서는 <strong>낮 토론·투표 → 밤 직업 행동 → 진행자가 낮으로 전환하며 사망·보호 결과 반영</strong>을 반복합니다.</p>
+        <ul>
+          <li><strong>시민:</strong> 밤 행동은 없습니다. 낮에 토론하고 투표합니다.</li>
+          <li><strong>마피아:</strong> 밤마다 살아있는 시민 측 플레이어 한 명을 선택합니다. 마피아가 여럿이고 모두 같은 사람을 고르면 그 사람이 대상입니다. 선택이 다르면 서로 다른 선택 대상 중 한 명을 무작위로 정합니다.</li>
+          <li><strong>의사:</strong> 밤마다 살릴 사람 한 명을 선택합니다. 자기 자신도 보호할 수 있습니다. 마피아의 최종 대상과 같으면 사망을 막습니다.</li>
+          <li><strong>경찰:</strong> 밤마다 한 번, 자기 자신을 제외한 생존자를 조사합니다. 결과는 즉시 조사한 경찰에게 보이고 변경할 수 없습니다. 결과에는 마피아인지 여부만 나오며 시민·의사 같은 세부 직업은 알려주지 않습니다. 진행자는 조사한 대상을 확인할 수 있습니다.</li>
+        </ul>
+        <p>마피아와 의사는 밤이 끝나기 전 선택을 바꿀 수 있습니다. 진행자는 누가 선택했는지와 미선택 상태를 확인할 수 있습니다. 미선택자가 있으면 경고가 뜹니다. 진행자가 확인하고 낮으로 넘기면 선택하지 않은 역할의 행동은 처리되지 않습니다.</p>
+      </section>
+      <section>
+        <h3>3. 낮 투표와 탈락</h3>
+        <ul>
+          <li>진행자가 투표를 시작하고 마감합니다. 생존자만 투표하며 자기 자신에게는 투표할 수 없습니다.</li>
+          <li>기권할 수 있고, 마감 전에는 선택을 바꿀 수 있습니다. 미투표는 기권으로 처리됩니다.</li>
+          <li>단독 최다 득표자 한 명을 처형합니다. 동률이거나 유효한 대상표가 없으면 처형하지 않습니다. 필요하면 진행자가 다시 투표할 수 있습니다.</li>
+          <li>마감 후 모두 득표 결과를 봅니다. 진행자는 투표자별 선택도 확인할 수 있습니다.</li>
+        </ul>
+        <p>밤에 사망하거나 투표로 처형된 플레이어는 행동과 투표를 할 수 없고 진행 상황을 관전합니다.</p>
+      </section>
+      <section>
+        <h3>4. 승리와 게임 초기화</h3>
+        <ul>
+          <li>밤 결과나 처형을 적용한 뒤 생존 마피아가 0명이면 시민 팀이 승리합니다. 시민 팀에는 경찰과 의사도 포함됩니다.</li>
+          <li>생존 마피아 수가 나머지 생존자 수 이상이면 마피아 팀이 승리합니다. 예를 들어 마피아 1명과 시민 팀 1명이 남으면 마피아가 승리합니다.</li>
+          <li>게임이 끝나거나 다시 시작하고 싶을 때 화면 우측 상단의 <strong>게임초기화</strong>를 누르고 설정한 비밀번호를 입력합니다. 진행자와 참가자를 모두 비우고 첫 화면으로 돌아갑니다. 게임 설정은 유지되며, 다음 진행자가 게임을 시작할 때 새 초기화 비밀번호를 설정합니다.</li>
+        </ul>
+      </section>
+    </div>
+  </dialog>
+  <dialog id="password-dialog" class="password-dialog" aria-labelledby="password-title">
+    <form id="password-form" class="password-form">
+      <div class="password-heading"><h2 id="password-title">초기화 비밀번호</h2></div>
+      <p id="password-description" class="password-description"></p>
+      <label id="password-label" for="password-input">비밀번호</label>
+      <input id="password-input" name="password" type="text" autocomplete="new-password">
+      <p id="password-error" class="password-error" role="alert" aria-live="polite"></p>
+      <div class="password-actions">
+        <button id="password-cancel" class="password-secondary" type="button">취소</button>
+        <button id="password-submit" class="password-primary" type="submit">확인</button>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="end-result-dialog" class="end-result-dialog" aria-labelledby="end-result-title">
+    <div class="end-result-content">
+      <h2 id="end-result-title">게임 결과</h2>
+      <p id="end-result-reason" class="end-result-reason"></p>
+      <div class="end-result-counts">
+        <div><span>생존 마피아</span><strong id="end-mafia-count"></strong></div>
+        <div><span>생존 시민 팀</span><strong id="end-citizen-count"></strong></div>
+      </div>
+      <h3>최종 참가자</h3>
+      <div id="end-result-players" class="end-result-players"></div>
+      <button id="end-result-close" class="end-result-close" type="button">닫기</button>
+    </div>
+  </dialog>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="./vendor/supabase.js"></script>
+  <script src="./supabase-config.js"></script>
+  <script src="./app.js" defer></script>
+</body>
+</html>
